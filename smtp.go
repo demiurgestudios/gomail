@@ -144,6 +144,10 @@ type smtpSender struct {
 
 func (c *smtpSender) Send(from string, to []string, msg io.WriterTo) error {
 	if err := c.Mail(from); err != nil {
+		// DS_JAZ: This is too aggressive - can happen if smtp-relay.gmail.com
+		// throttles us, in which case, rapid retry makes the problem worse,
+		// not better.
+		/*
 		if err == io.EOF {
 			// This is probably due to a timeout, so reconnect and try again.
 			sc, derr := c.d.Dial()
@@ -154,6 +158,7 @@ func (c *smtpSender) Send(from string, to []string, msg io.WriterTo) error {
 				}
 			}
 		}
+		*/
 		return err
 	}
 
